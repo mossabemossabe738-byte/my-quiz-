@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اختبار الذكاء الروحي</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #1e293b, #0f172a, #1e1b4b);
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.15);
+      --accent-yellow: #facc15;
+      --accent-yellow-hover: #eab308;
+      --text-white: #f8fafc;
+      --text-sub: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-white);
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 450px;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    p.subtitle {
+      color: var(--text-sub);
+      font-size: 14px;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
+
+    .tag {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+    }
+
+    .btn {
+      width: 100%;
+      background: var(--accent-yellow);
+      color: #000;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background: var(--accent-yellow-hover);
+      transform: translateY(-2px);
+    }
+
+    .quiz-sec {
+      display: none;
+    }
+
+    .question-title {
+      font-size: 18px;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-white);
+      padding: 12px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: right;
+      transition: 0.2s;
+    }
+
+    .option-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .score-text {
+      font-size: 28px;
+      color: var(--accent-yellow);
+      font-weight: bold;
+      margin: 16px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- الشاشة الأولى: البداية -->
+    <div id="start-screen">
+      <div class="icon">🪷</div>
+      <h1>الذكاء الروحي</h1>
+      <p class="subtitle">اكتشف مستوى التفكير، المعنى، والتوازن الداخلي لديك من خلال اختبار سريع.</p>
+      
+      <div class="tags">
+        <span class="tag">🌿 التأمل</span>
+        <span class="tag">💛 القيم</span>
+        <span class="tag">☀️ السكينة</span>
+        <span class="tag">🪷 التوازن</span>
+      </div>
+
+      <button class="btn" onclick="startQuiz()">بدء الاختبار ←</button>
+      <p class="subtitle" style="margin-top: 15px; font-size: 12px;">8 أسئلة • من 1 إلى 4 نقاط لكل إجابة</p>
+    </div>
+
+    <!-- الشاشة الثانية: الأسئلة -->
+    <div id="quiz-screen" class="quiz-sec">
+      <div class="subtitle" id="progress">سؤال 1 من 8</div>
+      <h2 class="question-title" id="question-text">نص السؤال هنا...</h2>
+      <div class="options" id="options-container"></div>
+    </div>
+
+    <!-- الشاشة الثالثة: النتيجة -->
+    <div id="result-screen" class="quiz-sec">
+      <div class="icon">✨</div>
+      <h1>نتيجة الاختبار</h1>
+      <div class="score-text" id="final-score">0 / 32</div>
+      <p class="subtitle" id="result-desc"></p>
+      <button class="btn" onclick="location.reload()">إعادة الاختبار 🔄</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      { text: "كيف تتعامل مع المواقف الضغاطة والصعبة؟", options: ["بأعصاب هادئة وتقبل", "بحالة قلق مؤقت ثم أستعيد توازني", "بصعوبة كبيرة", "بتوتر شديد يفقدني السيطرة"] },
+      { text: "هل تخصص وقتاً يومياً للتأمل أو التفكير في أهدافك العميقة؟", options: ["دائماً", "غالباً", "نادراً", "أبداً"] },
+      { text: "كيف تشعر تجاه الآخرين عند حدوث الخلافات؟", options: ["بالتسامح والتفهم", "محاولة التسامح", "بالغضب لفترة طويلة", "بالرغبة في الانتقام"] },
+      { text: "هل تشعر بالامتنان للأشياء الصغيرة في حياتك؟", options: ["دائماً وبشكل مستمر", "في معظم الأوقات", "قليلاً جداً", "لا أهتم"] },
+      { text: "ما مدى وضوح قيمك ومبادئك الشخصية في قراراتك؟", options: ["واضحة جداً وتوجهني دائماً", "واضحة في معظم القرارات", "أحياناً تتغير حسب الموقف", "غير واضحة"] },
+      { text: "كيف تشعر تجاه مستقبل حياتك بشكل عام؟", options: ["بالسلام والاطمئنان", "بالأمل والحذر", "بالقلق والتردد", "بالخوف الشديد"] },
+      { text: "هل تساعد الآخرين دون انتظار مقابل؟", options: ["دائماً بكل حب", "غالباً عندما أستطيع", "نادراً", "فقط إذا كان هناك مقابل"] },
+      { text: "كيف تقيّم اتصالك بذاتك وعالمك الداخلي؟", options: ["عميق ومستقر", "جيد إلى حد ما", "ضعيف أحتاج للتطوير", "مفقود تماماً"] }
+    ];
+
+    let currentQuestion = 0;
+    let totalScore = 0;
+
+    function startQuiz() {
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('quiz-screen').style.display = 'block';
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById('progress').innerText = `سؤال ${currentQuestion + 1} من ${questions.length}`;
+      document.getElementById('question-text').innerText = q.text;
+
+      const optionsDiv = document.getElementById('options-container');
+      optionsDiv.innerHTML = '';
+
+      q.options.forEach((opt, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerText = opt;
+        // Points system: 4 points for best answer down to 1
+        btn.onclick = () => selectAnswer(4 - index);
+        optionsDiv.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(points) {
+      totalScore += points;
+      currentQuestion++;
+
+      if (currentQuestion < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('result-screen').style.display = 'block';
+      
+      document.getElementById('final-score').innerText = `${totalScore} من 32 نقطة`;
+      
+      let desc = "";
+      if (totalScore >= 26) desc = "مشاء الله! لديك مستوى عالٍ جداً من الذكاء الروحي والتوازن الداخلي.";
+      else if (totalScore >= 18) desc = "مستواك جيد جداً، لديك وعي بذاتك وقيمك وترغب دائماً في التطور.";
+      else desc = "تحتاج لتخصيص وقت أكبر لنفسك وللتأمل وبناء سلامك الداخلي.";
+
+      document.getElementById('result-desc').innerText = desc;
+    }
+  </script>
+</body>
+</html>
